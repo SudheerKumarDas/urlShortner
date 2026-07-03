@@ -6,7 +6,7 @@ const app = express();
 
 app.use(express.json());
 
-app.use("/urls",urlRoutes);
+app.use("/api/urls",urlRoutes);
 
 app.get("/",(req,res)=>{
     res.send("URL shortcode");
