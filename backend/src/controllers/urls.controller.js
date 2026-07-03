@@ -1,17 +1,13 @@
 import Urls from "../models/Urls.model.js"
 
 import { nanoid } from "nanoid";
+import { createShortUrlService } from "../services/urls.service.js";
 
 export const createShortUrl = async (req,res) => {
     try {
         const { originalUrl } = req.body;
-        const shortUrl = nanoid(7);
-        const newUrl = new Urls({
-            originalUrl,
-            shortUrl:shortUrl,
-            createdAt:new Date()
-        })
-        await newUrl.save();
+        const newUrl = await createShortUrlService(originalUrl);
+        console.log(newUrl);
         res.status(201).json({
             message:"Short URL is created successfully",
             Url:newUrl
