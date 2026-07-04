@@ -103,7 +103,7 @@ export const updateUrl = async (req,res) => {
 export const redirectUrl = async (req,res) => {
     try {
         const { shortUrl } = req.params;
-        const url = await Urls.findOne({shortUrl:shortUrl});
+        const url = await Urls.findOneAndUpdate({shortUrl:shortUrl},{$inc:{clicks:1}},{new:true});
         console.log(url);
         if(!url){
             return res.status(404).json({
