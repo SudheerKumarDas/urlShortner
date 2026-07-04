@@ -13,7 +13,27 @@ export const createShortUrl = async (req,res) => {
             Url:newUrl
         })
     } catch (error) {
-        console.error("Error create creating short url",error);
+        console.error("Error creating short url",error);
+        res.status(500).json({
+            message:"Internal Server Error"
+        })
+    }
+}
+
+export const getAllUrls = async(req,res)=>{
+    try {
+        const urls = await Urls.find({});
+        if(!urls){
+            return res.status(404).json({
+                message:"URLs not found"
+            })
+        }
+        res.status(200).json({
+            message:"got all urls",
+            urls:urls
+        })
+    } catch (error) {
+        console.error("Error getting all urls",error);
         res.status(500).json({
             message:"Internal Server Error"
         })
