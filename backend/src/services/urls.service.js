@@ -28,3 +28,13 @@ export const deleteAUrlService = async (id) => {
     const deletedUrl = await Urls.findByIdAndDelete(id);
     return deletedUrl;
 }
+
+
+export const updatedUrlService = async (id,originalUrl) => {
+    const updatedUrl = await Urls.findByIdAndUpdate(id,{
+            originalUrl:originalUrl
+        },{
+            new:true
+        })
+    return updatedUrl;
+}
