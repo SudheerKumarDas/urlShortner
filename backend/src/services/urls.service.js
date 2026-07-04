@@ -12,3 +12,14 @@ export const createShortUrlService = async (originalUrl) => {
             await newUrl.save();
             return newUrl;
     }
+
+export const getAllUrlsService = async () => {
+    const urls = await Urls.find({});
+    return urls;
+}
+
+
+export const getAUrlService = async (id) => {
+    const url = await Urls.findById(id);
+    return url;
+}
