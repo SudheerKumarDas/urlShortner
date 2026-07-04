@@ -99,3 +99,22 @@ export const updateUrl = async (req,res) => {
         })
     }
 }
+
+export const redirectUrl = async (req,res) => {
+    try {
+        const { shortUrl } = req.params;
+        const url = await Urls.findOne({shortUrl:shortUrl});
+        console.log(url);
+        if(!url){
+            return res.status(404).json({
+                message:"URL not found"
+            })
+        }
+        res.redirect(url.originalUrl);
+    } catch (error) {
+        console.error("Error redirecting url",error);
+        res.status(500).json({
+            message:"Internal Server Error"
+        })
+    }   
+}
