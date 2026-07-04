@@ -1,7 +1,7 @@
 import Urls from "../models/Urls.model.js"
 
 import { nanoid } from "nanoid";
-import { createShortUrlService, getAllUrlsService, getAUrlService } from "../services/urls.service.js";
+import { createShortUrlService, getAllUrlsService, getAUrlService, deleteAUrlService } from "../services/urls.service.js";
 
 export const createShortUrl = async (req,res) => {
     try {
@@ -54,7 +54,29 @@ export const getAUrl = async (req,res) => {
             url:url
         })
     } catch (error) {
-        console.error("Error getting all urls",error);
+        console.error("Error getting a url",error);
+        res.status(500).json({
+            message:"Internal Server Error"
+        })
+    }
+}
+
+export const deleteAUrl = async(req,res)=> {
+    try {
+        const { id } = req.params;
+        const url = await deleteAUrlService(id);
+        console.log(url);
+        if(!url){
+            return res.status(404).json({
+                message:"Url not found"
+            })
+        }
+        res.status(200).json({
+            message:"Url deleted successfully",
+            deletedUrl:url
+        })
+    } catch (error) {
+        console.error("Error deleting url",error);
         res.status(500).json({
             message:"Internal Server Error"
         })

@@ -23,3 +23,8 @@ export const getAUrlService = async (id) => {
     const url = await Urls.findById(id);
     return url;
 }
+
+export const deleteAUrlService = async (id) => {
+    const deletedUrl = await Urls.findByIdAndDelete(id);
+    return deletedUrl;
+}
