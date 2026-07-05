@@ -14,14 +14,17 @@ export const createShortUrlService = async (originalUrl,userId) => {
             return newUrl;
     }
 
-export const getAllUrlsService = async () => {
-    const urls = await Urls.find({});
+export const getAllUrlsService = async (userId) => {
+    const urls = await Urls.find({owner:userId});
     return urls;
 }
 
 
-export const getAUrlService = async (id) => {
-    const url = await Urls.findById(id);
+export const getAUrlService = async (id,userId) => {
+    const url = await Urls.findOne({
+        _id:id,
+        owner:userId
+    });
     return url;
 }
 
