@@ -6,7 +6,10 @@ import { createShortUrlService, getAllUrlsService, getAUrlService, deleteAUrlSer
 export const createShortUrl = async (req,res) => {
     try {
         const { originalUrl } = req.body;
-        const newUrl = await createShortUrlService(originalUrl);
+        const user = req.user;
+        console.log(user);
+        const userId = user._id;
+        const newUrl = await createShortUrlService(originalUrl,userId);
         console.log(newUrl);
         res.status(201).json({
             message:"Short URL is created successfully",
