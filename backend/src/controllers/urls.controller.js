@@ -71,7 +71,9 @@ export const getAUrl = async (req,res) => {
 export const deleteAUrl = async(req,res)=> {
     try {
         const { id } = req.params;
-        const url = await deleteAUrlService(id);
+        const user = req.user;
+        const userId = user._id;
+        const url = await deleteAUrlService(id,userId);
         console.log(url);
         if(!url){
             return res.status(404).json({
@@ -94,7 +96,9 @@ export const updateUrl = async (req,res) => {
     try {
         const { id } = req.params;
         const { originalUrl } = req.body;
-        const updatedUrl = await updatedUrlService(id,originalUrl);
+        const user = req.user;
+        const userId = user._id;
+        const updatedUrl = await updatedUrlService(id,originalUrl,userId);
         res.status(200).json({
             message:"url updated successfully",
             updatedUrl:updatedUrl

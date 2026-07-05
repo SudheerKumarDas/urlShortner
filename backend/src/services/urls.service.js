@@ -28,14 +28,20 @@ export const getAUrlService = async (id,userId) => {
     return url;
 }
 
-export const deleteAUrlService = async (id) => {
-    const deletedUrl = await Urls.findByIdAndDelete(id);
+export const deleteAUrlService = async (id,userId) => {
+    const deletedUrl = await Urls.findOneAndDelete({
+        _id:id,
+        owner:userId
+    });
     return deletedUrl;
 }
 
 
-export const updatedUrlService = async (id,originalUrl) => {
-    const updatedUrl = await Urls.findByIdAndUpdate(id,{
+export const updatedUrlService = async (id,originalUrl,userId) => {
+    const updatedUrl = await Urls.findOneAndUpdate({
+        _id:id,
+        owner:userId
+    },{
             originalUrl:originalUrl
         },{
             new:true
