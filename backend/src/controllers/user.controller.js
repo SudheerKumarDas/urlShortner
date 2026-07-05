@@ -99,3 +99,17 @@ export const getUserUrls = async (req, res) => {
     });
   }
 };
+
+export const userLogout = async (req,res) => {
+    try {
+        res.clearCookie("token");
+        res.status(200).json({
+            message:"Logged out successfully"
+        })
+    } catch (error) {
+        console.error("Error fetching user's urls", error);
+    res.status(500).json({
+      message: "Internal server error",
+    });
+    }
+}
