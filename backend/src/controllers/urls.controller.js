@@ -25,7 +25,9 @@ export const createShortUrl = async (req,res) => {
 
 export const getAllUrls = async(req,res)=>{
     try {
-        const urls = await getAllUrlsService();
+        const user = req.user;
+        const userId = user._id;
+        const urls = await getAllUrlsService(userId);
         if(!urls || urls.length===0 ){
             return res.status(404).json({
                 message:"URLs not found"
@@ -46,7 +48,9 @@ export const getAllUrls = async(req,res)=>{
 export const getAUrl = async (req,res) => {
     try {
         const {id} = req.params;
-        const url = await getAUrlService(id);
+        const user = req.user;
+        const userId = user._id;
+        const url = await getAUrlService(id,userId);
         if(!url){
             return res.status(404).json({
                 message:"URL not found"

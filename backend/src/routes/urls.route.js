@@ -8,10 +8,10 @@ import { authUser } from "../middlewares/auth.middleware.js";
 const router = express.Router();
 
 router.post("/",validate(createUrlSchema) , authUser ,createShortUrl);
-router.get("/",getAllUrls);
-router.get("/:id",getAUrl);
-router.delete("/:id",deleteAUrl);
-router.patch("/:id",updateUrl);
+router.get("/",authUser, getAllUrls);
+router.get("/:id",authUser, getAUrl);
+router.delete("/:id",authUser, deleteAUrl);
+router.patch("/:id",authUser, updateUrl);
 
 
 export default router;
