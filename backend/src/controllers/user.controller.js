@@ -10,6 +10,12 @@ export const createUser = async (req,res) => {
                 message:"Provide all the credentials"
             })
         }
+        const existingUser = await User.findOne({email});
+        if(existingUser){
+            return res.status(409).json({
+                message:"Email already registered"
+            })
+        }
         const hashedPassword = await bcrypt.hash(password,10);
         const user = await User.create({
             username,
