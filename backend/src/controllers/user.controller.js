@@ -36,3 +36,33 @@ export const createUser = async (req,res) => {
         })
     }
 }
+
+export const userLogin = async (req,res) => {
+    try {
+        const {email, password} = req.body;
+        const user = await User.findOne({email});
+        if(!user){
+            return res.status(409).json({
+                message:"User do not exist"
+            })
+        }
+        const isPasswordMatch = await bcrypt.compare(password,user.password);
+        if(!isPasswordMatch){
+            return res.status(400).json({
+                message:"Please provide valid credentials"
+            })
+        }
+        res.status(200).json({
+            message:"User login successfully",
+            user:{
+                username:user.username,
+                email:user.email
+            }
+        })
+    } catch (error) {
+        console.error("Error logging user",error);
+        res.status(500).json({
+            message:"Internal server error"
+        })
+    }
+}
