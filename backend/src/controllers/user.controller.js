@@ -2,6 +2,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 import User from "../models/user.model.js";
+import Urls from "../models/Urls.model.js";
 
 export const createUser = async (req, res) => {
   try {
@@ -77,6 +78,22 @@ export const userLogin = async (req, res) => {
     });
   } catch (error) {
     console.error("Error logging user", error);
+    res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+};
+
+export const getUserUrls = async (req, res) => {
+  try {
+    const user = req.user;
+    const urls = await Urls.find({ owner: user._id });
+    res.status(200).json({
+      message: "fetched all the urls created by this user",
+      urls: urls,
+    });
+  } catch (error) {
+    console.error("Error fetching user's urls", error);
     res.status(500).json({
       message: "Internal server error",
     });
