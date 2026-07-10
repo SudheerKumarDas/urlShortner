@@ -18,7 +18,7 @@ function Register() {
             })
             const responseData = response.data;
             console.log(responseData);
-            navigate('/dashboard');
+            navigate('/login');
       } catch (error) {
           console.error(error);
       }
