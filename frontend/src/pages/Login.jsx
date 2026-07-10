@@ -5,9 +5,11 @@ import { useNavigate } from "react-router-dom";
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading,setIsLoading] = useState(false);
   const navigate = useNavigate();
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
     try {
       const response = await api.post("/auth/login", {
         email,
@@ -22,6 +24,8 @@ function Login() {
       navigate('/dashboard');
     } catch (error) {
         console.error(error);
+    } finally{
+        setIsLoading(false);
     }
   };
   return (
@@ -44,11 +48,11 @@ function Login() {
           onChange={(e) => setPassword(e.target.value)}
         />
 
-        <button type="submit">Login</button>
+        <button type="submit" disabled={setIsLoading}>Login</button>
 
         <div>
           <p>Don't have account ? </p>
-          <span>Register</span>
+          <button>Register</button>
         </div>
       </form>
     </div>
