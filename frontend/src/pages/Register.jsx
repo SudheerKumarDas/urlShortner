@@ -12,6 +12,9 @@ function Register() {
       email:"",
       password:""
     })
+    const [error,setError]=useState("");
+    const [isLoading,setIsLoading] = useState(false);
+
     const navigate = useNavigate();
 
     const handleChange = (e) => {
@@ -23,6 +26,7 @@ function Register() {
 
     const handleSubmit=async(e)=>{
       e.preventDefault();
+      setIsLoading(true);
       try {
             const response = await api.post('/auth/register',{
               username:formData.username,
@@ -32,13 +36,18 @@ function Register() {
             const responseData = response.data;
             console.log(responseData);
             navigate('/login');
-      } catch (error) {
-          console.error(error);
+      } catch (err) {
+          setError(
+            err.response?.data?.message || "Something went wrong"
+          )
+      } finally{
+        setIsLoading(false);
       }
     }
   return (
     <div>
       <h2>Register Page</h2>
+      {error && <p>{error}</p>}
       <form onSubmit={handleSubmit}>
 
         <label htmlFor="username">Username : </label>
@@ -68,7 +77,7 @@ function Register() {
           onChange={handleChange}
         />
 
-        <button type="submit">Register</button>
+        <button type="submit">{isLoading ? "Loading..." : "Register" }</button>
         
       </form>
     </div>
