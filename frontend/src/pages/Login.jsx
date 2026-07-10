@@ -1,7 +1,7 @@
 import { useState } from "react";
-import api from "../services/api.js";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { login } from "../services/auth.service.js";
 
 function Login() {
   //   const [email, setEmail] = useState("");
@@ -27,10 +27,7 @@ function Login() {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const response = await api.post("/auth/login", {
-        email: formData.email,
-        password: formData.password,
-      });
+      const response = await login(formData);
       const responseData = response.data;
       const user = responseData.user;
       const username = user.username;

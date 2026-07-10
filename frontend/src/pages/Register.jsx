@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import api from "../services/api.js";
+import { register } from "../services/auth.service.js";
 
 function Register() {
     // const [username,setUsername] = useState("");
@@ -28,11 +28,7 @@ function Register() {
       e.preventDefault();
       setIsLoading(true);
       try {
-            const response = await api.post('/auth/register',{
-              username:formData.username,
-              email:formData.email,
-              password:formData.password
-            })
+            const response = await register(formData);
             const responseData = response.data;
             console.log(responseData);
             navigate('/login');
