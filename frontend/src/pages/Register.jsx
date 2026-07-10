@@ -4,17 +4,30 @@ import { useNavigate } from "react-router-dom";
 import api from "../services/api.js";
 
 function Register() {
-    const [username,setUsername] = useState("");
-    const [email,setEmail] = useState("");
-    const [password,setPassword] = useState("");
+    // const [username,setUsername] = useState("");
+    // const [email,setEmail] = useState("");
+    // const [password,setPassword] = useState("");
+    const [formData,setFormData]=useState({
+      username:"",
+      email:"",
+      password:""
+    })
     const navigate = useNavigate();
+
+    const handleChange = (e) => {
+      setFormData({
+        ...formData,
+          [e.target.name]:e.target.value
+      })
+    }
+
     const handleSubmit=async(e)=>{
       e.preventDefault();
       try {
             const response = await api.post('/auth/register',{
-              username,
-              email,
-              password
+              username:formData.username,
+              email:formData.email,
+              password:formData.password
             })
             const responseData = response.data;
             console.log(responseData);
@@ -33,8 +46,8 @@ function Register() {
           type="text" 
           name="username" 
           placeholder="Enter your username"
-          value={username} 
-          onChange={(e)=>setUsername(e.target.value)}
+          value={formData.username} 
+          onChange={handleChange}
         />
 
         <label htmlFor="email">Email : </label>
@@ -42,8 +55,8 @@ function Register() {
           type="text" 
           name="email" 
           placeholder="Enter your email"
-          value={email}
-          onChange={(e)=>setEmail(e.target.value)} 
+          value={formData.email}
+          onChange={handleChange} 
         />
 
         <label htmlFor="password">Password : </label>
@@ -51,8 +64,8 @@ function Register() {
           type="password"
           name="password"
           placeholder="Enter your password"
-          value={password}
-          onChange={(e)=>setPassword(e.target.value)}
+          value={formData.password}
+          onChange={handleChange}
         />
 
         <button type="submit">Register</button>
