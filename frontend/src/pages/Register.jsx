@@ -61,7 +61,7 @@ function Register() {
 
         <label htmlFor="email">Email : </label>
         <input 
-          type="text" 
+          type="email" 
           name="email" 
           placeholder="Enter your email"
           value={formData.email}
