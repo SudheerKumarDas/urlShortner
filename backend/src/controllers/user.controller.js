@@ -87,11 +87,19 @@ export const userLogin = async (req, res) => {
 export const getUserUrls = async (req, res) => {
   try {
     const user = req.user;
-    const urls = await Urls.find({ owner: user._id });
+    // const urls = await Urls.find({ owner: user._id });
+    // res.status(200).json({
+    //   message: "fetched all the urls created by this user",
+    //   urls: urls,
+    // });
     res.status(200).json({
-      message: "fetched all the urls created by this user",
-      urls: urls,
-    });
+      message:"User fetched successfully",
+      user:{
+        id:user._id,
+        username:user.username,
+        email:user.email
+      },
+    })
   } catch (error) {
     console.error("Error fetching user's urls", error);
     res.status(500).json({
