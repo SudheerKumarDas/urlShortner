@@ -3,9 +3,13 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { login } from "../services/auth.service.js";
 
+import useAuth from "../hooks/useAuth.js";
+
 function Login() {
   //   const [email, setEmail] = useState("");
   //   const [password, setPassword] = useState("");
+
+  const { checkAuth } = useAuth();
 
   const [isLoading, setIsLoading] = useState(false);
   const [error,setError] = useState("");
@@ -34,6 +38,9 @@ function Login() {
       const userEmail = user.email;
       console.log(username);
       console.log(userEmail);
+
+      await checkAuth();
+
       navigate("/dashboard");
     } catch (err) {
         setError(

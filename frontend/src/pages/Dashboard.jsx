@@ -1,7 +1,13 @@
+import useAuth from "../hooks/useAuth.js";
 
 const Dashboard = () => {
+  const { user } = useAuth();
+  console.log(user);
   return (
-    <div>Dashboard</div>
+    <div>
+      <div>Dashboard</div>
+      <h2>Welcome {user?.username}</h2>
+    </div>
   )
 }
 
