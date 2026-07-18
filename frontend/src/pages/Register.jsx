@@ -24,34 +24,43 @@ const Register = () => {
             }
     }
   return (
-    <div>
+    <div className="w-full flex justify-center items-center">
         <form onSubmit={handleRegister}>
 
-            <label htmlFor="username">username</label>
-            <input 
-                type="text" 
-                name="username" 
-                value={username} 
-                onChange={(e)=>setUsername(e.target.value)} 
-            />
+            <div className="flex flex-col gap-1.5">
+                <label htmlFor="username">username</label>
+                <input 
+                    type="text" 
+                    name="username" 
+                    value={username} 
+                    onChange={(e)=>setUsername(e.target.value)}
+                    className="p-2 text-2xl border border-gray-300 bg-white text-gray-900 focus:outline-none focus:ring-blue-500"
+                />
+            </div>
 
-            <label htmlFor="email">email</label>
-            <input 
-                type="text" 
-                name="email" 
-                value={email} 
-                onChange={(e)=>setEmail(e.target.value)} 
-            />
+            <div className="flex flex-col gap-1.5">
+                <label htmlFor="email">email</label>
+                <input 
+                    type="text" 
+                    name="email" 
+                    value={email} 
+                    onChange={(e)=>setEmail(e.target.value)}
+                    className="p-2 text-2xl border border-gray-300 bg-white text-gray-900 focus:outline-none focus:ring-blue-500"
+                />
+            </div>
 
-            <label htmlFor="password">password</label>
-            <input 
-                type="text" 
-                name="password" 
-                value={password} 
-                onChange={(e)=>setPassword(e.target.value)} 
-            />
+            <div className="flex flex-col gap-1.5">
+                <label htmlFor="password">password</label>
+                <input 
+                    type="text" 
+                    name="password" 
+                    value={password} 
+                    onChange={(e)=>setPassword(e.target.value)} 
+                    className="p-2 text-2xl border border-gray-300 bg-white text-gray-900 focus:outline-none focus:ring-blue-500"
+                />
+            </div>
 
-            <button type="submit" >Register</button>
+            <button type="submit" className="mt-3 p-3 bg-blue-500 border-none rounded-2xl cursor-pointer">Register</button>
 
         </form>
     </div>
