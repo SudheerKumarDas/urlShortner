@@ -1,15 +1,11 @@
 import './App.css'
-import Navbar from './components/Navbar.jsx'
-import Dashboard from './pages/Dashboard.jsx'
-import Register from './pages/Register.jsx'
+import AppRoutes from './routes/AppRoutes.jsx'
 
 function App() {
 
   return (
-    <div className='w-full h-screen bg-zinc-500'>
-      <Navbar/>
-      <Dashboard/>
-      <Register/>
+    <div className='w-full h-screen bg-zinc-900 text-white'>
+      <AppRoutes/>
     </div>
   )
 }
