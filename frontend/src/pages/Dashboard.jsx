@@ -1,7 +1,9 @@
-
+import Card from "../components/Card.jsx"
 const Dashboard = () => {
   return (
-    <div>Dashboard</div>
+    <div>
+        <Card/>
+    </div>
   )
 }
 
