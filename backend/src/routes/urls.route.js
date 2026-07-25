@@ -12,7 +12,7 @@ router.get("/",authUser, getAllUrls);
 router.get("/:id",authUser, getAUrl);
 router.delete("/:id",authUser, deleteAUrl);
 router.patch("/:id",authUser, updateUrl);
-router.get("/redirect/:id",authUser,redirectUrl);
+
 
 
 export default router;

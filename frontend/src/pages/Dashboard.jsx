@@ -3,7 +3,8 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
-  const [user, setUser] = useState("");
+  const [user, setUser] = useState(null);
+  const [urls, setUrls] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -19,31 +20,37 @@ const Dashboard = () => {
       }
     };
     const getUrls = async () => {
-    try {
-        const res = await axios.get(`http://localhost:3000/api/urls/`,{
-            withCredentials:true,
-        })
+      try {
+        const res = await axios.get(`http://localhost:3000/api/urls/`, {
+          withCredentials: true,
+        });
         const resData = res.data;
         console.log(resData);
-    } catch (error) {
+        setUrls(resData.urls);
+      } catch (error) {
         console.error(error);
-    }
-  }
+      }
+    };
     fetchUser();
     getUrls();
   }, []);
-  const handleLogout = async () =>{
+
+  const handleLogout = async () => {
     try {
-      const res = await axios.post(`http://localhost:3000/api/auth/logout`,{},{
-        withCredentials:true,
-      })
+      const res = await axios.post(
+        `http://localhost:3000/api/auth/logout`,
+        {},
+        {
+          withCredentials: true,
+        },
+      );
       const resData = res.data;
       alert(resData.message);
       navigate("/login");
     } catch (error) {
       console.error(error);
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-slate-100">
@@ -58,14 +65,17 @@ const Dashboard = () => {
         <div className="flex items-center gap-4">
           <div className="text-right">
             <p className="text-sm text-gray-500">Welcome back,</p>
-            <p className="font-semibold text-gray-800">{user.username}</p>
+            <p className="font-semibold text-gray-800">{user?.username}</p>
           </div>
 
           <div className="flex h-11 w-11 items-center justify-center rounded-full bg-blue-600 text-lg font-semibold text-white">
             {user?.username?.[0]?.toUpperCase() || "?"}
           </div>
 
-          <button onClick={handleLogout} className="rounded-lg bg-red-500 px-4 py-2 font-medium text-white transition hover:bg-red-600 cursor-pointer">
+          <button
+            onClick={handleLogout}
+            className="rounded-lg bg-red-500 px-4 py-2 font-medium text-white transition hover:bg-red-600 cursor-pointer"
+          >
             Logout
           </button>
         </div>
@@ -133,46 +143,38 @@ const Dashboard = () => {
               </tr>
             </thead>
 
-            <tbody>
-              <tr className="border-t">
-                <td className="p-4">https://google.com</td>
-                <td className="p-4 text-blue-600">short.ly/abc123</td>
-                <td className="p-4">210</td>
-                <td className="p-4">Today</td>
-                <td className="space-x-2 p-4">
-                  <button className="rounded bg-blue-500 px-3 py-1 text-white cursor-pointer">
-                    Copy
-                  </button>
-
-                  <button className="rounded bg-green-500 px-3 py-1 text-white cursor-pointer">
-                    Edit
-                  </button>
-
-                  <button className="rounded bg-red-500 px-3 py-1 text-white cursor-pointer">
-                    Delete
-                  </button>
+            
+              <tbody>
+                {urls.length === 0 ? (
+              <tr>
+                <td colSpan={5} className="p-6 text-center text-gray-500">
+                  No URLs found
                 </td>
               </tr>
+              
+            ) : (
+              urls.map((url)=>(
+                <tr key={url._id} className="border-t">
+                  <td className="p-4">{url.originalUrl}</td>
+                  <td className="p-4 text-blue-600">{`http://localhost:3000/${url.shortUrl}`}</td>
+                  <td className="p-4">{url.clicks}</td>
+                  <td className="p-4">{new Date(url.createdAt).toLocaleDateString()}</td>
+                  <td className="space-x-2 p-4">
+                    <button className="rounded bg-blue-500 px-3 py-1 text-white cursor-pointer">
+                      Copy
+                    </button>
 
-              <tr className="border-t">
-                <td className="p-4">https://github.com</td>
-                <td className="p-4 text-blue-600">short.ly/git55</td>
-                <td className="p-4">542</td>
-                <td className="p-4">3 days ago</td>
-                <td className="space-x-2 p-4">
-                  <button className="rounded bg-blue-500 px-3 py-1 text-white">
-                    Copy
-                  </button>
+                    <button className="rounded bg-green-500 px-3 py-1 text-white cursor-pointer">
+                      Edit
+                    </button>
 
-                  <button className="rounded bg-green-500 px-3 py-1 text-white">
-                    Edit
-                  </button>
-
-                  <button className="rounded bg-red-500 px-3 py-1 text-white">
-                    Delete
-                  </button>
-                </td>
-              </tr>
+                    <button className="rounded bg-red-500 px-3 py-1 text-white cursor-pointer">
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
             </tbody>
           </table>
         </div>
