@@ -11,12 +11,10 @@ function App() {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        console.log("checkAuth started");
         await axios.get("http://localhost:3000/api/auth/me", {
           withCredentials: true,
         });
         setIsAuthenticated(true);
-        console.log("checkAuth ended");
       } catch (error) {
         console.error(error);
         setIsAuthenticated(false);
@@ -39,8 +37,7 @@ function App() {
   }
 
   return (
-    <div className="w-full h-screen bg-zinc-900 text-white">
-
+    <div>
       <AppRoutes
         isAuthenticated={isAuthenticated}
         setIsAuthenticated={setIsAuthenticated}

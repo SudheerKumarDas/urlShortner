@@ -18,7 +18,19 @@ const Dashboard = () => {
         console.error(error);
       }
     };
+    const getUrls = async () => {
+    try {
+        const res = await axios.get(`http://localhost:3000/api/urls/`,{
+            withCredentials:true,
+        })
+        const resData = res.data;
+        console.log(resData);
+    } catch (error) {
+        console.error(error);
+    }
+  }
     fetchUser();
+    getUrls();
   }, []);
   const handleLogout = async () =>{
     try {
@@ -76,7 +88,7 @@ const Dashboard = () => {
 
             <input type="date" className="w-full rounded-lg border p-3" />
 
-            <button className="w-full rounded-lg bg-blue-600 py-3 font-semibold text-white hover:bg-blue-700">
+            <button className="w-full rounded-lg bg-blue-600 py-3 font-semibold text-white hover:bg-blue-700 cursor-pointer">
               Create URL
             </button>
           </div>
@@ -128,15 +140,15 @@ const Dashboard = () => {
                 <td className="p-4">210</td>
                 <td className="p-4">Today</td>
                 <td className="space-x-2 p-4">
-                  <button className="rounded bg-blue-500 px-3 py-1 text-white">
+                  <button className="rounded bg-blue-500 px-3 py-1 text-white cursor-pointer">
                     Copy
                   </button>
 
-                  <button className="rounded bg-green-500 px-3 py-1 text-white">
+                  <button className="rounded bg-green-500 px-3 py-1 text-white cursor-pointer">
                     Edit
                   </button>
 
-                  <button className="rounded bg-red-500 px-3 py-1 text-white">
+                  <button className="rounded bg-red-500 px-3 py-1 text-white cursor-pointer">
                     Delete
                   </button>
                 </td>

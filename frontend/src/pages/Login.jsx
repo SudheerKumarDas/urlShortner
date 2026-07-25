@@ -9,6 +9,18 @@ const Login = ({ setIsAuthenticated }) => {
   const [showPassword, setShowPassword] = useState("");
   const navigate = useNavigate();
 
+  const getUrls = async () => {
+    try {
+        const res = await axios.get(`http://localhost:3000/api/urls/`,{
+            withCredentials:true,
+        })
+        const resData = res.data;
+        console.log(resData);
+    } catch (error) {
+        console.error(error);
+    }
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
