@@ -3,7 +3,7 @@ import { Eye, EyeOff } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const Login = () => {
+const Login = ({ setIsAuthenticated }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState("");
@@ -23,6 +23,7 @@ const Login = () => {
         },
       );
       console.log(res.data.user);
+      setIsAuthenticated(true);
       navigate("/dashboard");
     } catch (error) {
       console.error(`Error in sign in ${error}`);
