@@ -13,7 +13,8 @@ export const createShortUrl = async (req,res) => {
         console.log(newUrl);
         res.status(201).json({
             message:"Short URL is created successfully",
-            Url:newUrl
+            Url:newUrl,
+            shortUrlResponse:`http://localhost:3000/${newUrl.shortUrl}`
         })
     } catch (error) {
         console.error("Error creating short url",error);
