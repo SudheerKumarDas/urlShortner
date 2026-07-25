@@ -12,14 +12,20 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-        const res = await axios.post(`http://localhost:3000/api/auth/login`,{
-            email,
-            password
-        })
-        console.log(res.data.user);
-        navigate("/dashboard");
+      const res = await axios.post(
+        `http://localhost:3000/api/auth/login`,
+        {
+          email,
+          password,
+        },
+        {
+          withCredentials: true,
+        },
+      );
+      console.log(res.data.user);
+      navigate("/dashboard");
     } catch (error) {
-        console.error(`Error in sign in ${error}`);
+      console.error(`Error in sign in ${error}`);
     }
   };
 

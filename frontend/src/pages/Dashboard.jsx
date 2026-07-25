@@ -1,15 +1,44 @@
+import axios from "axios";
+
 const Dashboard = () => {
+  const fetchUser = async () => {
+    try {
+      const res = await axios.get(`http://localhost:3000/api/auth/me`, {
+        withCredentials: true,
+      });
+      console.log(res.data);
+      console.log(res.data.user.email);
+      console.log(res.data.user.username);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  fetchUser();
   return (
     <div className="min-h-screen bg-slate-100">
       {/* Navbar */}
-      <nav className="flex items-center justify-between bg-white px-8 py-4 shadow">
-        <h1 className="text-2xl font-bold text-blue-600">URL Shortener</h1>
+      <nav className="flex items-center justify-between border-b bg-white px-8 py-4 shadow-sm">
+        {/* Left */}
+        <div>
+          <h1 className="text-2xl font-bold text-blue-600">URL Shortener</h1>
+        </div>
 
-        <button className="rounded-lg bg-red-500 px-4 py-2 text-white">
-          Logout
-        </button>
+        {/* Right */}
+        <div className="flex items-center gap-4">
+          <div className="text-right">
+            <p className="text-sm text-gray-500">Welcome back,</p>
+            <p className="font-semibold text-gray-800">Sudheer Das</p>
+          </div>
+
+          <div className="flex h-11 w-11 items-center justify-center rounded-full bg-blue-600 text-lg font-semibold text-white">
+            S
+          </div>
+
+          <button className="rounded-lg bg-red-500 px-4 py-2 font-medium text-white transition hover:bg-red-600">
+            Logout
+          </button>
+        </div>
       </nav>
-
       <div className="mx-auto max-w-7xl p-8 text-black">
         {/* Create URL Card */}
         <div className="rounded-xl bg-white p-6 shadow">
