@@ -52,6 +52,20 @@ const Dashboard = () => {
     }
   };
 
+  const totalClicks = urls.reduce((total, url) => {
+    return total + url.clicks;
+  }, 0);
+
+  const handleCopy = async (shortUrl) => {
+    try {
+      await navigator.clipboard.writeText(shortUrl);
+      alert("Copied to clipboard!");
+    } catch (error) {
+      console.error(error);
+      alert("Failed to copy.");
+    }
+  };
+
   return (
     <div className="min-h-screen bg-slate-100">
       {/* Navbar */}
@@ -108,12 +122,12 @@ const Dashboard = () => {
         <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-3">
           <div className="rounded-xl bg-white p-6 shadow">
             <p className="text-gray-500">Total URLs</p>
-            <h3 className="text-4xl font-bold">18</h3>
+            <h3 className="text-4xl font-bold">{urls.length}</h3>
           </div>
 
           <div className="rounded-xl bg-white p-6 shadow">
             <p className="text-gray-500">Total Clicks</p>
-            <h3 className="text-4xl font-bold">2,310</h3>
+            <h3 className="text-4xl font-bold">{totalClicks}</h3>
           </div>
 
           <div className="rounded-xl bg-white p-6 shadow">
@@ -143,38 +157,38 @@ const Dashboard = () => {
               </tr>
             </thead>
 
-            
-              <tbody>
-                {urls.length === 0 ? (
-              <tr>
-                <td colSpan={5} className="p-6 text-center text-gray-500">
-                  No URLs found
-                </td>
-              </tr>
-              
-            ) : (
-              urls.map((url)=>(
-                <tr key={url._id} className="border-t">
-                  <td className="p-4">{url.originalUrl}</td>
-                  <td className="p-4 text-blue-600">{`http://localhost:3000/${url.shortUrl}`}</td>
-                  <td className="p-4">{url.clicks}</td>
-                  <td className="p-4">{new Date(url.createdAt).toLocaleDateString()}</td>
-                  <td className="space-x-2 p-4">
-                    <button className="rounded bg-blue-500 px-3 py-1 text-white cursor-pointer">
-                      Copy
-                    </button>
-
-                    <button className="rounded bg-green-500 px-3 py-1 text-white cursor-pointer">
-                      Edit
-                    </button>
-
-                    <button className="rounded bg-red-500 px-3 py-1 text-white cursor-pointer">
-                      Delete
-                    </button>
+            <tbody>
+              {urls.length === 0 ? (
+                <tr>
+                  <td colSpan={5} className="p-6 text-center text-gray-500">
+                    No URLs found
                   </td>
                 </tr>
-              ))
-            )}
+              ) : (
+                urls.map((url) => (
+                  <tr key={url._id} className="border-t">
+                    <td className="p-4">{url.originalUrl}</td>
+                    <td className="p-4 text-blue-600">{`http://localhost:3000/${url.shortUrl}`}</td>
+                    <td className="p-4">{url.clicks}</td>
+                    <td className="p-4">
+                      {new Date(url.createdAt).toLocaleDateString()}
+                    </td>
+                    <td className="space-x-2 p-4">
+                      <button onClick={()=>handleCopy(`http://localhost:3000/${url.shortUrl}`)} className="rounded bg-blue-500 px-3 py-1 text-white cursor-pointer">
+                        Copy
+                      </button>
+
+                      <button className="rounded bg-green-500 px-3 py-1 text-white cursor-pointer">
+                        Edit
+                      </button>
+
+                      <button className="rounded bg-red-500 px-3 py-1 text-white cursor-pointer">
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
