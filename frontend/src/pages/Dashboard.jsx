@@ -1,70 +1,73 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import {
+  copyShortUrl,
+  fetchUser,
+  getUrls,
+  logoutUser,
+} from "../services/service.js";
+import { totalUrlsClicks } from "../utils/utils.js";
 
 const Dashboard = () => {
   const [user, setUser] = useState(null);
   const [urls, setUrls] = useState([]);
+  const [originalUrl, setOriginalUrl] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [createdUrl, setCreatedUrl] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const res = await axios.get(`http://localhost:3000/api/auth/me`, {
-          withCredentials: true,
-        });
-        const userData = res.data.user;
-        setUser(userData);
-      } catch (error) {
-        console.error(error);
-      }
+    const getUserData = async () => {
+      const userData = await fetchUser();
+      setUser(userData);
     };
-    const getUrls = async () => {
-      try {
-        const res = await axios.get(`http://localhost:3000/api/urls/`, {
-          withCredentials: true,
-        });
-        const resData = res.data;
-        console.log(resData);
-        setUrls(resData.urls);
-      } catch (error) {
-        console.error(error);
-      }
+
+    const getUrlsData = async () => {
+      const urlsData = await getUrls();
+      setUrls(urlsData.urls);
     };
-    fetchUser();
-    getUrls();
+    getUserData();
+    getUrlsData();
   }, []);
 
   const handleLogout = async () => {
+    const resData = await logoutUser();
+    alert(resData.message);
+    navigate("/login");
+  };
+
+  const totalClicks = totalUrlsClicks(urls);
+
+  const handleCopy = async (shortUrl) => {
+    await copyShortUrl(shortUrl);
+  };
+
+  const handleSubmit = async () => {
+    if (!originalUrl.trim()) {
+      alert("Please enter long url");
+    }
     try {
+      setLoading(true);
       const res = await axios.post(
-        `http://localhost:3000/api/auth/logout`,
-        {},
+        `http://localhost:3000/api/urls`,
+        {
+          originalUrl,
+        },
         {
           withCredentials: true,
         },
       );
-      const resData = res.data;
-      alert(resData.message);
-      navigate("/login");
+      console.log(res);
+      console.log(res.data.url);
+      setCreatedUrl(res.data.url);
     } catch (error) {
       console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
-
-  const totalClicks = urls.reduce((total, url) => {
-    return total + url.clicks;
-  }, 0);
-
-  const handleCopy = async (shortUrl) => {
-    try {
-      await navigator.clipboard.writeText(shortUrl);
-      alert("Copied to clipboard!");
-    } catch (error) {
-      console.error(error);
-      alert("Failed to copy.");
-    }
-  };
+  console.log(loading);
 
   return (
     <div className="min-h-screen bg-slate-100">
@@ -101,7 +104,10 @@ const Dashboard = () => {
 
           <div className="space-y-4">
             <input
-              placeholder="https://example.com"
+              placeholder="Enter your long url here"
+              name="originalUrl"
+              value={originalUrl}
+              onChange={(e) => setOriginalUrl(e.target.value)}
               className="w-full rounded-lg border p-3"
             />
 
@@ -112,11 +118,48 @@ const Dashboard = () => {
 
             <input type="date" className="w-full rounded-lg border p-3" />
 
-            <button className="w-full rounded-lg bg-blue-600 py-3 font-semibold text-white hover:bg-blue-700 cursor-pointer">
+            <button
+              onClick={handleSubmit}
+              className="w-full rounded-lg bg-blue-600 py-3 font-semibold text-white hover:bg-blue-700 cursor-pointer"
+            >
               Create URL
             </button>
           </div>
         </div>
+
+        {createdUrl && (
+          <div className="mt-6 rounded-xl border border-green-200 bg-green-50 p-5">
+            <h3 className="mb-4 text-lg font-semibold text-green-700">
+              ✅ Short URL Created
+            </h3>
+
+            <div className="flex items-center justify-between rounded-lg bg-white p-3">
+              <a
+                href={`http://localhost:3000/${createdUrl.shortUrl}`}
+                target="_blank"
+                rel="noreferrer"
+                className="text-blue-600 underline"
+              >
+                http://localhost:3000/{createdUrl.shortUrl}
+              </a>
+
+              <button
+                onClick={() =>
+                  navigator.clipboard.writeText(
+                    `http://localhost:3000/${createdUrl.shortUrl}`,
+                  )
+                }
+                className="rounded bg-blue-600 px-3 py-1 text-white cursor-pointer"
+              >
+                Copy
+              </button>
+            </div>
+
+            <p className="mt-3 text-sm text-gray-600">
+              Original URL: {createdUrl.originalUrl}
+            </p>
+          </div>
+        )}
 
         {/* Stats */}
         <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-3">
@@ -174,7 +217,12 @@ const Dashboard = () => {
                       {new Date(url.createdAt).toLocaleDateString()}
                     </td>
                     <td className="space-x-2 p-4">
-                      <button onClick={()=>handleCopy(`http://localhost:3000/${url.shortUrl}`)} className="rounded bg-blue-500 px-3 py-1 text-white cursor-pointer">
+                      <button
+                        onClick={() =>
+                          handleCopy(`http://localhost:3000/${url.shortUrl}`)
+                        }
+                        className="rounded bg-blue-500 px-3 py-1 text-white cursor-pointer"
+                      >
                         Copy
                       </button>
 

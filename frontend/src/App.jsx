@@ -20,7 +20,6 @@ function App() {
         setIsAuthenticated(false);
       } finally {
         setIsLoading(false);
-        console.log("Final block executed");
       }
     };
     checkAuth();
