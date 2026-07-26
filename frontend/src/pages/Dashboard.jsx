@@ -4,11 +4,12 @@ import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   copyShortUrl,
-  fetchUser,
+  // fetchUser,
   getUrls,
-  logoutUser,
+  // logoutUser,
 } from "../services/service.js";
 import { totalUrlsClicks } from "../utils/utils.js";
+import { fetchUserService, getUrlsService, logoutUserService, updateUrlService } from "../services/url.service.js";
 
 const Dashboard = () => {
   const [user, setUser] = useState(null);
@@ -22,18 +23,23 @@ const Dashboard = () => {
 
   useEffect(() => {
     const getUserData = async () => {
-      const userData = await fetchUser();
-      setUser(userData);
+      // const userData = await fetchUser();
+      // setUser(userData);
+      const res = await fetchUserService();
+      setUser(res.data.user)
     };
 
     const getUrlsData = async () => {
-      const urlsData = await getUrls();
-      setUrls(urlsData.urls);
+      // const urlsData = await getUrls();
+      // setUrls(urlsData.urls);
+      const res = await getUrlsService();
+      setUrls(res.data.urls);
     };
     
     const handleFocus = () => {
       getUrlsData();
     };
+    
     window.addEventListener("focus", handleFocus);
     getUserData();
     getUrlsData();
@@ -43,8 +49,10 @@ const Dashboard = () => {
   }, []);
 
   const handleLogout = async () => {
-    const resData = await logoutUser();
-    alert(resData.message);
+    // const resData = await logoutUser();
+    // alert(resData.message);
+    const res = await logoutUserService();
+    alert(res.data.message);
     navigate("/login");
   };
 
@@ -59,15 +67,16 @@ const Dashboard = () => {
       alert("Please enter long url");
     }
     if (editingUrl) {
-      await axios.patch(
-        `http://localhost:3000/api/urls/${editingUrl._id}`,
-        {
-          originalUrl,
-        },
-        {
-          withCredentials: true,
-        },
-      );
+      // await axios.patch(
+      //   `http://localhost:3000/api/urls/${editingUrl._id}`,
+      //   {
+      //     originalUrl,
+      //   },
+      //   {
+      //     withCredentials: true,
+      //   },
+      // );
+      await updateUrlService(originalUrl,editingUrl._id);
       const urlsData = await getUrls();
       setUrls(urlsData.urls);
       setEditingUrl(null);
