@@ -44,7 +44,7 @@ export const updatedUrlService = async (id,originalUrl,userId) => {
     },{
             originalUrl:originalUrl
         },{
-            new:true
+            returnDocument:'after'
         })
     return updatedUrl;
 }

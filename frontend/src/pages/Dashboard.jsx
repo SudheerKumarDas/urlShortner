@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
+import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   copyShortUrl,
@@ -15,7 +16,8 @@ const Dashboard = () => {
   const [originalUrl, setOriginalUrl] = useState("");
   const [loading, setLoading] = useState(false);
   const [createdUrl, setCreatedUrl] = useState(null);
-  const [editingUrl,setEditingUrl] = useState(null);
+  const [editingUrl, setEditingUrl] = useState(null);
+  const inputRef = useRef(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -28,8 +30,9 @@ const Dashboard = () => {
       const urlsData = await getUrls();
       setUrls(urlsData.urls);
     };
+    
     const handleFocus = () => {
-         getUrlsData();
+      getUrlsData();
     };
     window.addEventListener("focus", handleFocus);
     getUserData();
@@ -55,10 +58,9 @@ const Dashboard = () => {
     if (!originalUrl.trim()) {
       alert("Please enter long url");
     }
-    try {
-      setLoading(true);
-      const res = await axios.post(
-        `http://localhost:3000/api/urls`,
+    if (editingUrl) {
+      await axios.patch(
+        `http://localhost:3000/api/urls/${editingUrl._id}`,
         {
           originalUrl,
         },
@@ -66,49 +68,59 @@ const Dashboard = () => {
           withCredentials: true,
         },
       );
-      console.log(res);
-      console.log(res.data.url);
-      setCreatedUrl(res.data.url);
-      setUrls((prev)=>[res.data.url,...prev]);
-      await getUrls();
+      const urlsData = await getUrls();
+      setUrls(urlsData.urls);
+      setEditingUrl(null);
       setOriginalUrl("");
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
+      
+    } else {
+      try {
+        setLoading(true);
+        const res = await axios.post(
+          `http://localhost:3000/api/urls`,
+          {
+            originalUrl,
+          },
+          {
+            withCredentials: true,
+          },
+        );
+        console.log(res);
+        console.log(res.data.url);
+        setCreatedUrl(res.data.url);
+        setUrls((prev) => [res.data.url, ...prev]);
+        await getUrls();
+        setOriginalUrl("");
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
     }
   };
   console.log(loading);
-  const handleDelete=async(urlId)=>{
+  const handleDelete = async (urlId) => {
     try {
-      await axios.delete(`http://localhost:3000/api/urls/${urlId}`,{
-        withCredentials:true
-      })
-      setUrls((prev)=>
-        prev.filter((url)=>url._id!==urlId)
-      )
+      await axios.delete(`http://localhost:3000/api/urls/${urlId}`, {
+        withCredentials: true,
+      });
+      setUrls((prev) => prev.filter((url) => url._id !== urlId));
     } catch (error) {
       console.error(error);
     }
-  }
+  };
 
   const handleUpdate = async (url) => {
     try {
       setLoading(true);
       setEditingUrl(url);
       setOriginalUrl(url.originalUrl);
-
-      await axios.patch(`http://localhost:3000/api/urls/${url.id}`,{
-        originalUrl
-      },{
-        withCredentials:true
-      })
-      const urlsData = await getUrls()
-      setUrls(urlsData.urls);
+      console.log(url._id);
+      inputRef.current?.focus();
     } catch (error) {
       console.error(error);
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-slate-100">
@@ -146,6 +158,7 @@ const Dashboard = () => {
           <div className="space-y-4">
             <input
               placeholder="Enter your long url here"
+              ref={inputRef}
               name="originalUrl"
               value={originalUrl}
               onChange={(e) => setOriginalUrl(e.target.value)}
@@ -271,18 +284,17 @@ const Dashboard = () => {
                         Copy
                       </button>
 
-                      <button 
+                      <button
                         className="rounded bg-green-500 px-3 py-1 text-white cursor-pointer"
-                        onClick={()=>
-                          handleUpdate(url)
-                        }
+                        onClick={() => handleUpdate(url)}
                       >
                         Edit
                       </button>
 
-                      <button 
-                        onClick={()=>handleDelete(url._id)}
-                        className="rounded bg-red-500 px-3 py-1 text-white cursor-pointer">
+                      <button
+                        onClick={() => handleDelete(url._id)}
+                        className="rounded bg-red-500 px-3 py-1 text-white cursor-pointer"
+                      >
                         Delete
                       </button>
                     </td>
