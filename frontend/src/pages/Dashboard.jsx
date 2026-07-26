@@ -15,6 +15,7 @@ const Dashboard = () => {
   const [originalUrl, setOriginalUrl] = useState("");
   const [loading, setLoading] = useState(false);
   const [createdUrl, setCreatedUrl] = useState(null);
+  const [editingUrl,setEditingUrl] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -91,6 +92,24 @@ const Dashboard = () => {
     }
   }
 
+  const handleUpdate = async (url) => {
+    try {
+      setLoading(true);
+      setEditingUrl(url);
+      setOriginalUrl(url.originalUrl);
+
+      await axios.patch(`http://localhost:3000/api/urls/${url.id}`,{
+        originalUrl
+      },{
+        withCredentials:true
+      })
+      const urlsData = await getUrls()
+      setUrls(urlsData.urls);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   return (
     <div className="min-h-screen bg-slate-100">
       {/* Navbar */}
@@ -142,7 +161,7 @@ const Dashboard = () => {
               onClick={handleSubmit}
               className="w-full rounded-lg bg-blue-600 py-3 font-semibold text-white hover:bg-blue-700 cursor-pointer"
             >
-              Create URL
+              {editingUrl ? "Update URL" : "Create URL"}
             </button>
           </div>
         </div>
@@ -252,7 +271,12 @@ const Dashboard = () => {
                         Copy
                       </button>
 
-                      <button className="rounded bg-green-500 px-3 py-1 text-white cursor-pointer">
+                      <button 
+                        className="rounded bg-green-500 px-3 py-1 text-white cursor-pointer"
+                        onClick={()=>
+                          handleUpdate(url)
+                        }
+                      >
                         Edit
                       </button>
 
