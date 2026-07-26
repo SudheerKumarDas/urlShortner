@@ -27,8 +27,15 @@ const Dashboard = () => {
       const urlsData = await getUrls();
       setUrls(urlsData.urls);
     };
+    const handleFocus = () => {
+         getUrlsData();
+    };
+    window.addEventListener("focus", handleFocus);
     getUserData();
     getUrlsData();
+    return () => {
+      window.removeEventListener("focus", handleFocus);
+    };
   }, []);
 
   const handleLogout = async () => {
@@ -61,6 +68,8 @@ const Dashboard = () => {
       console.log(res);
       console.log(res.data.url);
       setCreatedUrl(res.data.url);
+      // setUrls((prev)=>[res.data.url,...prev]);
+      await getUrls();
       setOriginalUrl("");
     } catch (error) {
       console.error(error);
@@ -144,9 +153,7 @@ const Dashboard = () => {
 
               <button
                 onClick={() =>
-                  navigator.clipboard.writeText(
-                    `http://localhost:3000/${createdUrl.shortUrl}`,
-                  )
+                  handleCopy(`http://localhost:3000/${createdUrl.shortUrl}`)
                 }
                 className="rounded bg-blue-600 px-3 py-1 text-white cursor-pointer"
               >
@@ -211,12 +218,12 @@ const Dashboard = () => {
                   <tr key={url._id} className="border-t">
                     <td className="p-4">{url.originalUrl}</td>
                     <td className="p-4 text-blue-600">
-                      <a 
+                      <a
                         href={`http://localhost:3000/${url.shortUrl}`}
                         target="_blank"
                         rel="noreferrer"
                       >
-                        {`http://localhost:3000/${url.shortUrl}`}    
+                        {`http://localhost:3000/${url.shortUrl}`}
                       </a>
                     </td>
                     <td className="p-4">{url.clicks}</td>
