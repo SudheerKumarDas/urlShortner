@@ -33,3 +33,21 @@ export const updateUrlService = async (originalUrl, urlId) => {
     },
   );
 };
+
+export const createUrlService = async (originalUrl) => {
+  return await axios.post(
+    `http://localhost:3000/api/urls`,
+    {
+      originalUrl,
+    },
+    {
+      withCredentials: true,
+    },
+  );
+};
+
+export const deleteUrlService = async (urlId) => {
+    return await axios.delete(`http://localhost:3000/api/urls/${urlId}`, {
+        withCredentials: true,
+      });
+}

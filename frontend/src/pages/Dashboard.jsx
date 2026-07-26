@@ -1,4 +1,4 @@
-import axios from "axios";
+// import axios from "axios";
 import { useState, useEffect } from "react";
 import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
@@ -9,7 +9,7 @@ import {
   // logoutUser,
 } from "../services/service.js";
 import { totalUrlsClicks } from "../utils/utils.js";
-import { fetchUserService, getUrlsService, logoutUserService, updateUrlService } from "../services/url.service.js";
+import { createUrlService, deleteUrlService, fetchUserService, getUrlsService, logoutUserService, updateUrlService } from "../services/url.service.js";
 
 const Dashboard = () => {
   const [user, setUser] = useState(null);
@@ -85,15 +85,16 @@ const Dashboard = () => {
     } else {
       try {
         setLoading(true);
-        const res = await axios.post(
-          `http://localhost:3000/api/urls`,
-          {
-            originalUrl,
-          },
-          {
-            withCredentials: true,
-          },
-        );
+        // const res = await axios.post(
+        //   `http://localhost:3000/api/urls`,
+        //   {
+        //     originalUrl,
+        //   },
+        //   {
+        //     withCredentials: true,
+        //   },
+        // );
+        const res = await createUrlService(originalUrl);
         console.log(res);
         console.log(res.data.url);
         setCreatedUrl(res.data.url);
@@ -110,9 +111,10 @@ const Dashboard = () => {
   console.log(loading);
   const handleDelete = async (urlId) => {
     try {
-      await axios.delete(`http://localhost:3000/api/urls/${urlId}`, {
-        withCredentials: true,
-      });
+      // await axios.delete(`http://localhost:3000/api/urls/${urlId}`, {
+      //   withCredentials: true,
+      // });
+      await deleteUrlService(urlId);
       setUrls((prev) => prev.filter((url) => url._id !== urlId));
     } catch (error) {
       console.error(error);
