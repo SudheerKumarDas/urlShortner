@@ -61,6 +61,7 @@ const Dashboard = () => {
       console.log(res);
       console.log(res.data.url);
       setCreatedUrl(res.data.url);
+      setOriginalUrl("");
     } catch (error) {
       console.error(error);
     } finally {
@@ -115,8 +116,6 @@ const Dashboard = () => {
               placeholder="Custom alias (optional)"
               className="w-full rounded-lg border p-3"
             />
-
-            <input type="date" className="w-full rounded-lg border p-3" />
 
             <button
               onClick={handleSubmit}
@@ -211,7 +210,15 @@ const Dashboard = () => {
                 urls.map((url) => (
                   <tr key={url._id} className="border-t">
                     <td className="p-4">{url.originalUrl}</td>
-                    <td className="p-4 text-blue-600">{`http://localhost:3000/${url.shortUrl}`}</td>
+                    <td className="p-4 text-blue-600">
+                      <a 
+                        href={`http://localhost:3000/${url.shortUrl}`}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        {`http://localhost:3000/${url.shortUrl}`}    
+                      </a>
+                    </td>
                     <td className="p-4">{url.clicks}</td>
                     <td className="p-4">
                       {new Date(url.createdAt).toLocaleDateString()}

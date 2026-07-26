@@ -42,7 +42,7 @@ export const logoutUser = async () => {
 export const copyShortUrl = async (shortUrl) => {
      try {
       await navigator.clipboard.writeText(shortUrl);
-      alert("Copied to clipboard!");
+      alert("Short Url copied!");
     } catch (error) {
       console.error(error);
       alert("Failed to copy.");
