@@ -9,7 +9,14 @@ import {
   // logoutUser,
 } from "../services/service.js";
 import { totalUrlsClicks } from "../utils/utils.js";
-import { createUrlService, deleteUrlService, fetchUserService, getUrlsService, logoutUserService, updateUrlService } from "../services/url.service.js";
+import {
+  createUrlService,
+  deleteUrlService,
+  fetchUserService,
+  getUrlsService,
+  logoutUserService,
+  updateUrlService,
+} from "../services/url.service.js";
 
 const Dashboard = () => {
   const [user, setUser] = useState(null);
@@ -18,6 +25,7 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(false);
   const [createdUrl, setCreatedUrl] = useState(null);
   const [editingUrl, setEditingUrl] = useState(null);
+  const [searchedUrl, setSearchedUrl] = useState("");
   const inputRef = useRef(null);
   const navigate = useNavigate();
 
@@ -26,7 +34,7 @@ const Dashboard = () => {
       // const userData = await fetchUser();
       // setUser(userData);
       const res = await fetchUserService();
-      setUser(res.data.user)
+      setUser(res.data.user);
     };
 
     const getUrlsData = async () => {
@@ -35,11 +43,11 @@ const Dashboard = () => {
       const res = await getUrlsService();
       setUrls(res.data.urls);
     };
-    
+
     const handleFocus = () => {
       getUrlsData();
     };
-    
+
     window.addEventListener("focus", handleFocus);
     getUserData();
     getUrlsData();
@@ -76,12 +84,11 @@ const Dashboard = () => {
       //     withCredentials: true,
       //   },
       // );
-      await updateUrlService(originalUrl,editingUrl._id);
+      await updateUrlService(originalUrl, editingUrl._id);
       const urlsData = await getUrls();
       setUrls(urlsData.urls);
       setEditingUrl(null);
       setOriginalUrl("");
-      
     } else {
       try {
         setLoading(true);
@@ -132,6 +139,10 @@ const Dashboard = () => {
       console.error(error);
     }
   };
+
+  const filteredUrls = urls.filter((url) =>
+    url.originalUrl.toLowerCase().includes(searchedUrl.toLowerCase()),
+  );
 
   return (
     <div className="min-h-screen bg-slate-100">
@@ -244,6 +255,9 @@ const Dashboard = () => {
         <div className="mt-8">
           <input
             placeholder="Search URLs..."
+            name="searchedUrl"
+            value={searchedUrl}
+            onChange={(e) => setSearchedUrl(e.target.value)}
             className="w-full rounded-lg border bg-white p-3"
           />
         </div>
@@ -262,14 +276,14 @@ const Dashboard = () => {
             </thead>
 
             <tbody>
-              {urls.length === 0 ? (
+              {filteredUrls.length === 0 ? (
                 <tr>
                   <td colSpan={5} className="p-6 text-center text-gray-500">
                     No URLs found
                   </td>
                 </tr>
               ) : (
-                urls.map((url) => (
+                filteredUrls.map((url) => (
                   <tr key={url._id} className="border-t">
                     <td className="p-4">{url.originalUrl}</td>
                     <td className="p-4 text-blue-600">
