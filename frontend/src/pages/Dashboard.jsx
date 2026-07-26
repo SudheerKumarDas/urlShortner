@@ -68,7 +68,7 @@ const Dashboard = () => {
       console.log(res);
       console.log(res.data.url);
       setCreatedUrl(res.data.url);
-      // setUrls((prev)=>[res.data.url,...prev]);
+      setUrls((prev)=>[res.data.url,...prev]);
       await getUrls();
       setOriginalUrl("");
     } catch (error) {
@@ -78,6 +78,18 @@ const Dashboard = () => {
     }
   };
   console.log(loading);
+  const handleDelete=async(urlId)=>{
+    try {
+      await axios.delete(`http://localhost:3000/api/urls/${urlId}`,{
+        withCredentials:true
+      })
+      setUrls((prev)=>
+        prev.filter((url)=>url._id!==urlId)
+      )
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   return (
     <div className="min-h-screen bg-slate-100">
@@ -244,7 +256,9 @@ const Dashboard = () => {
                         Edit
                       </button>
 
-                      <button className="rounded bg-red-500 px-3 py-1 text-white cursor-pointer">
+                      <button 
+                        onClick={()=>handleDelete(url._id)}
+                        className="rounded bg-red-500 px-3 py-1 text-white cursor-pointer">
                         Delete
                       </button>
                     </td>
