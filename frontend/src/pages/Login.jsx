@@ -24,7 +24,7 @@ const Login = ({ setIsAuthenticated }) => {
       );
       console.log(res.data.user);
       setIsAuthenticated(true);
-      navigate("/dashboard");
+      navigate("/dashboard",{replace:true});
     } catch (error) {
       console.error(`Error in sign in ${error}`);
     }

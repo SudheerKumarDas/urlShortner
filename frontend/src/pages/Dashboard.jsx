@@ -61,7 +61,7 @@ const Dashboard = () => {
     // alert(resData.message);
     const res = await logoutUserService();
     alert(res.data.message);
-    navigate("/login");
+    navigate("/login",{replace:true});
   };
 
   const totalClicks = totalUrlsClicks(urls);
