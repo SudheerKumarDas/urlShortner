@@ -209,17 +209,17 @@ const Dashboard = () => {
 
             <div className="flex items-center justify-between rounded-lg bg-white p-3">
               <a
-                href={`http://localhost:3000/${createdUrl.shortUrl}`}
+                href={`${import.meta.env.VITE_API_URL}/${createdUrl.shortUrl}`}
                 target="_blank"
                 rel="noreferrer"
                 className="text-blue-600 underline"
               >
-                http://localhost:3000/{createdUrl.shortUrl}
+                {`${import.meta.env.VITE_API_URL}/{createdUrl.shortUrl}`}
               </a>
 
               <button
                 onClick={() =>
-                  handleCopy(`http://localhost:3000/${createdUrl.shortUrl}`)
+                  handleCopy(`${import.meta.env.VITE_API_URL}/${createdUrl.shortUrl}`)
                 }
                 className="rounded bg-blue-600 px-3 py-1 text-white cursor-pointer"
               >
@@ -288,11 +288,11 @@ const Dashboard = () => {
                     <td className="p-4">{url.originalUrl}</td>
                     <td className="p-4 text-blue-600">
                       <a
-                        href={`http://localhost:3000/${url.shortUrl}`}
+                        href={`${import.meta.env.VITE_API_URL}/${url.shortUrl}`}
                         target="_blank"
                         rel="noreferrer"
                       >
-                        {`http://localhost:3000/${url.shortUrl}`}
+                        {`${import.meta.env.VITE_API_URL}/${url.shortUrl}`}
                       </a>
                     </td>
                     <td className="p-4">{url.clicks}</td>
@@ -302,7 +302,7 @@ const Dashboard = () => {
                     <td className="space-x-2 p-4">
                       <button
                         onClick={() =>
-                          handleCopy(`http://localhost:3000/${url.shortUrl}`)
+                          handleCopy(`${import.meta.env.VITE_API_URL}/${url.shortUrl}`)
                         }
                         className="rounded bg-blue-500 px-3 py-1 text-white cursor-pointer"
                       >

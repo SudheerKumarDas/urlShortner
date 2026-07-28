@@ -2,7 +2,7 @@ import axios from "axios";
 
 export const fetchUser = async () => {
       try {
-        const res = await axios.get(`http://localhost:3000/api/auth/me`, {
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/auth/me`, {
           withCredentials: true,
         });
         return res.data.user;
@@ -14,7 +14,7 @@ export const fetchUser = async () => {
 
 export const getUrls = async () => {
       try {
-        const res = await axios.get(`http://localhost:3000/api/urls/`, {
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/urls/`, {
           withCredentials: true,
         });
         console.log(res.data);
@@ -29,7 +29,7 @@ export const getUrls = async () => {
 export const logoutUser = async () => {
     try {
       const res = await axios.post(
-        `http://localhost:3000/api/auth/logout`,
+        `${import.meta.env.VITE_API_URL}/api/auth/logout`,
         {},
         {
           withCredentials: true,

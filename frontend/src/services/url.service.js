@@ -1,20 +1,20 @@
 import axios from "axios";
 
 export const fetchUserService = async () => {
-  return await axios.get(`http://localhost:3000/api/auth/me`, {
+  return await axios.get(`${import.meta.env.VITE_API_URL}/api/auth/me`, {
     withCredentials: true,
   });
 };
 
 export const getUrlsService = async () => {
-  return await axios.get(`http://localhost:3000/api/urls/`, {
+  return await axios.get(`${import.meta.env.VITE_API_URL}/api/urls/`, {
     withCredentials: true,
   });
 };
 
 export const logoutUserService = async () => {
   return await axios.post(
-    `http://localhost:3000/api/auth/logout`,
+    `${import.meta.env.VITE_API_URL}/api/auth/logout`,
     {},
     {
       withCredentials: true,
@@ -24,7 +24,7 @@ export const logoutUserService = async () => {
 
 export const updateUrlService = async (originalUrl, urlId) => {
   return await axios.patch(
-    `http://localhost:3000/api/urls/${urlId}`,
+    `${import.meta.env.VITE_API_URL}/api/urls/${urlId}`,
     {
       originalUrl,
     },
@@ -36,7 +36,7 @@ export const updateUrlService = async (originalUrl, urlId) => {
 
 export const createUrlService = async (originalUrl) => {
   return await axios.post(
-    `http://localhost:3000/api/urls`,
+    `${import.meta.env.VITE_API_URL}/api/urls`,
     {
       originalUrl,
     },
@@ -47,7 +47,7 @@ export const createUrlService = async (originalUrl) => {
 };
 
 export const deleteUrlService = async (urlId) => {
-    return await axios.delete(`http://localhost:3000/api/urls/${urlId}`, {
+    return await axios.delete(`${import.meta.env.VITE_API_URL}/api/urls/${urlId}`, {
         withCredentials: true,
       });
 }

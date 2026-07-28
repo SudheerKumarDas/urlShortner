@@ -11,7 +11,7 @@ function App() {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        await axios.get("http://localhost:3000/api/auth/me", {
+        await axios.get(`${import.meta.env.VITE_API_URL}/api/auth/me`, {
           withCredentials: true,
         });
         setIsAuthenticated(true);
