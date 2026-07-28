@@ -214,7 +214,7 @@ const Dashboard = () => {
                 rel="noreferrer"
                 className="text-blue-600 underline"
               >
-                {`${import.meta.env.VITE_API_URL}/{createdUrl.shortUrl}`}
+                {`${import.meta.env.VITE_API_URL}/${createdUrl.shortUrl}`}
               </a>
 
               <button
