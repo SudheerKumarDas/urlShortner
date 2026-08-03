@@ -76,7 +76,46 @@ export const verifyEmail = async (req,res) => {
     res.status(200).json({
       message:"email verified successfully"
     })
+
+  } catch (error) {
+    console.error("Error verifying email", error);
+    res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+}
+
+export const resendVerifyEmail = async (req,res) => {
+  try {
+    const { email } = req.body;
+    if(!email){
+      return res.status(400).json({
+        message:"Provide email"
+      })
+    }
+    const user = await User.findOne({email});
+    if(!user){
+      return res.status(404).json({
+        message:"User not found"
+      })
+    }
+    if(user.isVerified){
+      return res.status(400).json({
+        message:"User already verified"
+      })
+    }
+    const rawVerificationToken = crypto.randomBytes(32).toString('hex');
+    const hashedVerificationToken = crypto.createHash('sha256').update(rawVerificationToken).digest('hex');
     
+    user.verificationToken = hashedVerificationToken;
+    user.verificationTokenExpires = Date.now() + 60 * 60 *1000;
+
+    await user.save();
+    await emailVerification(email,rawVerificationToken);
+
+    res.status(200).json({
+      message:"check your email for verification"
+    })
   } catch (error) {
     console.error("Error verifying email", error);
     res.status(500).json({

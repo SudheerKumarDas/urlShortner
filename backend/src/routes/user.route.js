@@ -1,6 +1,6 @@
 import express from "express"
 
-import { createUser, getUserUrls, userLogin, userLogout, verifyEmail } from "../controllers/user.controller.js"
+import { createUser, getUserUrls, resendVerifyEmail, userLogin, userLogout, verifyEmail } from "../controllers/user.controller.js"
 import { authUser } from "../middlewares/auth.middleware.js";
 import { validate } from "../middlewares/validate.js";
 import { loginUserSchema, registerUserSchema } from "../validators/user.validator.js";
@@ -12,5 +12,6 @@ router.post("/login",validate(loginUserSchema),userLogin);
 router.get("/me",authUser,getUserUrls);
 router.post("/logout",authUser,userLogout);
 router.get("/verify-email",verifyEmail);
+router.post("/resend-verification",resendVerifyEmail);
 
 export default router;
