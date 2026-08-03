@@ -1,8 +1,7 @@
 import nodemailer from "nodemailer";
-import { email } from "zod";
 
 const transporter = nodemailer.createTransport({
-  host: "stmp.gmail.com",
+  host: "smtp.gmail.com",
   port: process.env.EMAIL_PORT,
   secure: false,
   auth: {
@@ -16,14 +15,14 @@ const emailVerification = async (toEmail, token) => {
   await transporter.sendMail({
     from: `"MY APP" <${process.env.EMAIL_USER}>`,
     to: toEmail,
-    subject: "Verify email",
+    subject: "Verify email address",
     html: `
-            <h2>Email Verification</h2>
-      <p>Click the link below to verify your email. This link expires in 1 hour.</p>
-      <a href="${verifyUrl}" target="_blank">Verify Email</a>
-      <p>If the button doesn't work, copy this link: ${verifyUrl}</p>
+        <h2>Email Verification</h2>
+        <p>Click the link below to verify your email. This link expires in 1 hour.</p>
+        <a href="${verifyUrl}" target="_blank">Verify Email</a>
+        <p>If the button doesn't work, copy this link: ${verifyUrl}</p>
 
-        `,
+    `
   });
 };
 

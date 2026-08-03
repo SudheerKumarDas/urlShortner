@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { type } from "os";
 
 const userSchema = new mongoose.Schema({
     username:{
@@ -17,8 +18,13 @@ const userSchema = new mongoose.Schema({
     isVerified:{
         type:Boolean,
         default:false
+    },
+    verificationToken:{
+        type:String
+    },
+    verificationTokenExpires:{
+        type:Date
     }
-    
 },{
     timestamps:true
 })

@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import crypto from "crypto";
 
 import User from "../models/user.model.js";
 import Urls from "../models/Urls.model.js";
@@ -19,11 +20,17 @@ export const createUser = async (req, res) => {
       });
     }
     const hashedPassword = await bcrypt.hash(password, 10);
+    
+    const rawVerificationToken = crypto.randomBytes(32).toString('hex');
+    const hashedVerificationToken = crypto.createHash('sha256').update(rawVerificationToken).digest('hex');
     const user = await User.create({
       username,
       email,
       password: hashedPassword,
+      verificationToken:hashedVerificationToken,
+      verificationTokenExpires:Date.now()+60*60*1000
     });
+    
     res.status(201).json({
       message: "user created successfully",
       user: {
