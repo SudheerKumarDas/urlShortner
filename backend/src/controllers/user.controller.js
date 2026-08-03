@@ -4,6 +4,7 @@ import crypto from "crypto";
 
 import User from "../models/user.model.js";
 import Urls from "../models/Urls.model.js";
+import emailVerification from "../services/email.service.js";
 
 export const createUser = async (req, res) => {
   try {
@@ -20,10 +21,11 @@ export const createUser = async (req, res) => {
       });
     }
     const hashedPassword = await bcrypt.hash(password, 10);
-    
+
     const rawVerificationToken = crypto.randomBytes(32).toString('hex');
     const hashedVerificationToken = crypto.createHash('sha256').update(rawVerificationToken).digest('hex');
-    const user = await User.create({
+    
+    const newUser = await User.create({
       username,
       email,
       password: hashedPassword,
@@ -31,11 +33,12 @@ export const createUser = async (req, res) => {
       verificationTokenExpires:Date.now()+60*60*1000
     });
     
+    await emailVerification(newUser.email,rawVerificationToken);
     res.status(201).json({
-      message: "user created successfully",
+      message: "user created successfully, check your email for verification",
       user: {
-        username: user.username,
-        email: user.email,
+        username: newUser.username,
+        email: newUser.email,
       },
     });
   } catch (error) {
@@ -45,6 +48,42 @@ export const createUser = async (req, res) => {
     });
   }
 };
+
+export const verifyEmail = async (req,res) => {
+  try {
+    const {token} = req.query;
+    if(!token){
+      return res.status(400).json({
+        message:"token not provided"
+      })
+    }
+    const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+    const user = await User.findOne({
+      verificationToken:hashedToken,
+      verificationTokenExpires:{$gt:Date.now()}
+    })
+    if(!user){
+      return res.status(404).json({
+        message:"Invalid or expired verification token"
+      })
+    }
+    user.isVerified=true;
+    user.verificationToken=undefined;
+    user.verificationTokenExpires=undefined;
+
+    await user.save();
+
+    res.status(200).json({
+      message:"email verified successfully"
+    })
+    
+  } catch (error) {
+    console.error("Error verifying email", error);
+    res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+}
 
 export const userLogin = async (req, res) => {
   try {
