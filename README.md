@@ -1,61 +1,88 @@
 # 🔗 URL Shortener
 
-A full-stack URL Shortener built with the MERN stack that allows users to register, log in, create short URLs, manage them, and track click statistics.
+A modern full-stack URL Shortener built with the MERN Stack. Users can securely register, verify their email, log in, create and manage short URLs, and track click statistics.
 
-## 🚀 Live Demo
+---
+
+# 🚀 Live Demo
 
 - **Frontend:** https://url-shortner-cyan-six.vercel.app/
 - **Backend:** https://urlshortner-4zri.onrender.com
 
 ---
 
-## ✨ Features
+# ✨ Features
 
-- 🔐 User Authentication (JWT + HTTP-only Cookies)
-- 👤 User Registration & Login
-- 🔒 Protected Dashboard
-- ✂️ Create Short URLs
-- 📋 Copy Short URL to Clipboard
-- ✏️ Edit Original URL
-- 🗑️ Delete URLs
-- 📊 Track Click Count
-- 🔍 Search URLs
-- 📱 Responsive UI
-- 🚀 Redirect Short URL to Original URL
+## 🔐 Authentication
+
+- User Registration
+- Email Verification via Secure Token
+- Resend Verification Email
+- JWT Authentication
+- HTTP-only Cookie Authentication
+- Protected Routes
+- Secure Logout
+- Password Hashing using bcrypt
+
+## 🔗 URL Management
+
+- Create Short URLs
+- Redirect Short URL to Original URL
+- Update Original URL
+- Delete URLs
+- Copy Short URL to Clipboard
+- Search URLs
+- Click Tracking
+
+## 📊 Dashboard
+
+- Total URLs
+- Total Clicks
+- Active Links
+- Responsive Dashboard
 
 ---
 
-## 🛠️ Tech Stack
+# 🛠 Tech Stack
 
-### Frontend
+## Frontend
 
 - React
-- React Router
+- React Router DOM
 - Axios
 - Tailwind CSS
+- React Hot Toast
+- Lucide React
 - Vite
 
-### Backend
+## Backend
 
 - Node.js
 - Express.js
 - MongoDB
 - Mongoose
-- JWT Authentication
+- JWT
 - Cookie Parser
 - bcrypt
 - nanoid
+- Nodemailer
+- Crypto
 
 ---
 
-## 📁 Project Structure
+# 📁 Project Structure
 
 ```text
 urlShortner/
 │
 ├── frontend/
-│   ├── src/
 │   ├── public/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── pages/
+│   │   ├── routes/
+│   │   ├── services/
+│   │   └── utils/
 │   ├── package.json
 │   └── vite.config.js
 │
@@ -76,27 +103,26 @@ urlShortner/
 
 ---
 
-## ⚙️ Installation
+# ⚙️ Installation
 
-### Clone the repository
+## Clone Repository
 
 ```bash
-git clone https://github.com/your-username/urlShortner.git
+git clone https://github.com/SudheerKumarDas/urlShortner.git
 
 cd urlShortner
 ```
 
 ---
 
-## Backend Setup
+# Backend Setup
 
 ```bash
 cd backend
-
 npm install
 ```
 
-Create a `.env` file inside `backend`.
+Create `.env`
 
 ```env
 PORT=3000
@@ -106,6 +132,10 @@ MONGODB_URI=your_mongodb_uri
 JWT_SECRET=your_secret_key
 
 CLIENT_URL=http://localhost:5173
+
+EMAIL_USER=your_email@gmail.com
+EMAIL_PASS=your_app_password
+EMAIL_PORT=587
 
 NODE_ENV=development
 ```
@@ -118,11 +148,10 @@ npm run dev
 
 ---
 
-## Frontend Setup
+# Frontend Setup
 
 ```bash
 cd frontend
-
 npm install
 ```
 
@@ -140,46 +169,77 @@ npm run dev
 
 ---
 
-## API Endpoints
+# Authentication Flow
 
-### Authentication
+```text
+Register
+    │
+    ▼
+Verification Email Sent
+    │
+    ▼
+User Clicks Verification Link
+    │
+    ▼
+Email Verified
+    │
+    ▼
+Login
+    │
+    ▼
+Dashboard
+```
+
+---
+
+# API Endpoints
+
+## Authentication
 
 | Method | Endpoint | Description |
 |---------|----------|-------------|
 | POST | `/api/auth/register` | Register User |
+| GET | `/api/auth/verify-email` | Verify Email |
+| POST | `/api/auth/resend-verify-email` | Resend Verification Email |
 | POST | `/api/auth/login` | Login User |
 | POST | `/api/auth/logout` | Logout User |
 | GET | `/api/auth/me` | Get Logged-in User |
 
 ---
 
-### URLs
+## URL
 
 | Method | Endpoint | Description |
 |---------|----------|-------------|
-| POST | `/api/urls` | Create Short URL |
-| GET | `/api/urls` | Get User URLs |
+| POST | `/api/urls` | Create URL |
+| GET | `/api/urls` | Get All User URLs |
 | PATCH | `/api/urls/:id` | Update URL |
 | DELETE | `/api/urls/:id` | Delete URL |
 | GET | `/:shortUrl` | Redirect to Original URL |
 
 ---
 
-## Screenshots
+# Screenshots
 
-### Login
+## Register
 
-![Login Page](./screenshots/login1.png)
-
----
-
-### Dashboard
-
-![Register Page](./screenshots/register.png)
+![Register](./screenshots/register.png)
 
 ---
 
-### Create Short URL
+## Login
+
+![Login](./screenshots/login.png)
+
+---
+
+## Email Verification
+
+![Email Verification](./screenshots/email_verification.png)
+
+---
+
+## Dashboard
 
 ![Dashboard](./screenshots/dashboard.png)
 
@@ -201,21 +261,24 @@ npm run dev
 
 ---
 
-## Future Improvements
+# Future Improvements
 
-- 📈 Analytics Dashboard
-- 📅 URL Expiration
-- 📱 QR Code Generation
-- 🌐 Custom Domains
-- 📊 Charts for Click Analytics
-- 🔑 Forgot Password via Email
-- 🧪 Unit & Integration Tests
-- 🚀 Rate Limiting
-- 📝 Custom Short Aliases Validation
+- Forgot Password
+- Password Reset via Email
+- QR Code Generation
+- URL Expiration
+- Custom Short Aliases
+- Analytics Charts
+- Rate Limiting
+- Redis Caching
+- Docker Support
+- Unit & Integration Testing
+- Admin Dashboard
+- Custom Domains
 
 ---
 
-## Author
+# Author
 
 **Sudheer Kumar Das**
 
@@ -223,6 +286,6 @@ GitHub: https://github.com/SudheerKumarDas
 
 ---
 
-## License
+# License
 
 This project is licensed under the MIT License.

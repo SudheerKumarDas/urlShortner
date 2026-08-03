@@ -1,5 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import Register from "../pages/Register.jsx";
+import EmailVerification from "../pages/EmailVerification.jsx";
+import CheckEmail from "../pages/CheckEmail.jsx";
 import Login from "../pages/Login.jsx";
 import Dashboard from "../pages/Dashboard.jsx";
 import ForgetPassword from "../pages/ForgetPassword.jsx";
@@ -17,6 +19,11 @@ const AppRoutes = ({ isAuthenticated, setIsAuthenticated }) => {
           }
         />
         <Route path="/register" element={<Register />} />
+
+        <Route path="/verify-email" element={<EmailVerification />} />
+
+        <Route path="/check-email" element={<CheckEmail />} />
+
         <Route
           path="/login"
           element={<Login setIsAuthenticated={setIsAuthenticated} />}

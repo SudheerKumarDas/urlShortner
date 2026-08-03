@@ -11,20 +11,27 @@ const Register = () => {
 
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) =>{
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/register`,{
-        username,
-        email,
-        password
-      })
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/auth/register`,
+        {
+          username,
+          email,
+          password,
+        },
+      );
       console.log(res.data.user);
-      navigate('/login');
+      navigate("/check-email", {
+        state: {
+          email,
+        },
+      });
     } catch (error) {
       console.error(error);
     }
-  }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-slate-100 via-blue-50 to-slate-200 px-4">
