@@ -103,7 +103,7 @@ const Login = ({ setIsAuthenticated }) => {
             </label>
 
             <a
-              href="/forgot-password"
+              href="/forget-password"
               className="text-sm text-blue-600 hover:underline"
             >
               Forgot password?

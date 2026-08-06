@@ -233,8 +233,8 @@ export const userForgetPassword = async (req, res) => {
       const hashedResetPasswordToken = crypto.createHash('sha256').update(rawResetPasswordToken).digest('hex');
       user.resetPasswordToken=hashedResetPasswordToken;
       user.resetPasswordTokenExpires=Date.now()+60*60*1000;
-
-      sendPasswordResetEmail(email,rawResetPasswordToken);
+      await user.save();
+      await sendPasswordResetEmail(email,rawResetPasswordToken);
 
       res.status(200).json({
         message:"If an account with that email exists, a reset link has been sent."
@@ -252,7 +252,7 @@ export const userResetPassword = async (req, res) => {
   try {
     const { token, newPassword } = req.body;
     if (!token || !newPassword) {
-      res.status(400).json({
+      return res.status(400).json({
         message: "Provide token and new password both",
       });
     }
@@ -262,11 +262,11 @@ export const userResetPassword = async (req, res) => {
           resetPasswordTokenExpires:{$gt:Date.now()}
       });
     if (!foundUser) {
-      res.status(404).json({
+      return res.status(404).json({
         message: "Invalid or expired reset link",
       });
     }
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
     foundUser.password = hashedPassword;
     foundUser.resetPasswordToken=undefined;
     foundUser.resetPasswordTokenExpires= undefined;

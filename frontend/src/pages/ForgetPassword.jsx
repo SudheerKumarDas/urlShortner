@@ -1,5 +1,18 @@
-
+import axios  from "axios";
+import { useState } from "react";
 const ForgetPassword = () => {
+  const [email,setEmail]= useState("");
+  const handleSubmit = async(e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/forget-password`,{
+        email
+      });
+      console.log(response.data)
+    } catch (error) {
+      console.error(`Error in forget password ${error}`);
+    }
+  }
   return (
     <div className="flex min-h-screen items-center justify-center bg-linear-to-br from-slate-100 via-blue-50 to-slate-200 px-4">
       <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-xl">
@@ -20,7 +33,7 @@ const ForgetPassword = () => {
         </p>
 
         {/* Form */}
-        <form className="mt-8 space-y-5">
+        <form onSubmit={handleSubmit} className="mt-8 space-y-5">
           <div>
             <label
               htmlFor="email"
@@ -33,6 +46,8 @@ const ForgetPassword = () => {
               id="email"
               type="email"
               placeholder="Enter your email"
+              onChange={(e)=>setEmail(e.target.value)}
+              value={email}
               className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
             />
           </div>

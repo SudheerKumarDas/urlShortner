@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import axios from "axios"
 
 export default function ResetPasswordPage() {
   const [token, setToken] = useState("");
@@ -19,12 +20,6 @@ export default function ResetPasswordPage() {
     e.preventDefault();
     setMessage("");
 
-    if (password.length < 6) {
-      setStatus("error");
-      setMessage("Password must be at least 6 characters.");
-      return;
-    }
-
     if (password !== confirmPassword) {
       setStatus("error");
       setMessage("Passwords do not match.");
@@ -34,19 +29,10 @@ export default function ResetPasswordPage() {
     setStatus("submitting");
 
     try {
-      const res = await fetch("/api/auth/reset-password", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token, newPassword: password }),
+      await axios.post(`${import.meta.env.VITE_API_URL}/api/auth/reset-password`, {
+        token,
+        newPassword: password,
       });
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(
-          data.message || "Something went wrong. Please try again.",
-        );
-      }
-
       setStatus("success");
       setMessage("Your password has been reset. You can now log in.");
     } catch (err) {

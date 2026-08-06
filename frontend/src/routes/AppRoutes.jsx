@@ -5,6 +5,7 @@ import CheckEmail from "../pages/CheckEmail.jsx";
 import Login from "../pages/Login.jsx";
 import Dashboard from "../pages/Dashboard.jsx";
 import ForgetPassword from "../pages/ForgetPassword.jsx";
+import ResetPassword from "../pages/ResetPassword.jsx";
 import ProtectedRoute from "../components/ProtectedRoute.jsx";
 import { Navigate } from "react-router-dom";
 
@@ -23,6 +24,8 @@ const AppRoutes = ({ isAuthenticated, setIsAuthenticated }) => {
         <Route path="/verify-email" element={<EmailVerification />} />
 
         <Route path="/check-email" element={<CheckEmail />} />
+
+        <Route path="/reset-password" element={<ResetPassword/>} />
 
         <Route
           path="/login"
