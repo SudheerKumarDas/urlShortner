@@ -4,7 +4,7 @@ import crypto from "crypto";
 
 import User from "../models/user.model.js";
 import Urls from "../models/Urls.model.js";
-import emailVerification from "../services/email.service.js";
+import { emailVerification, sendPasswordResetEmail } from "../services/email.service.js";
 
 export const createUser = async (req, res) => {
   try {
@@ -22,18 +22,21 @@ export const createUser = async (req, res) => {
     }
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const rawVerificationToken = crypto.randomBytes(32).toString('hex');
-    const hashedVerificationToken = crypto.createHash('sha256').update(rawVerificationToken).digest('hex');
-    
+    const rawVerificationToken = crypto.randomBytes(32).toString("hex");
+    const hashedVerificationToken = crypto
+      .createHash("sha256")
+      .update(rawVerificationToken)
+      .digest("hex");
+
     const newUser = await User.create({
       username,
       email,
       password: hashedPassword,
-      verificationToken:hashedVerificationToken,
-      verificationTokenExpires:Date.now()+60*60*1000
+      verificationToken: hashedVerificationToken,
+      verificationTokenExpires: Date.now() + 60 * 60 * 1000,
     });
-    
-    await emailVerification(newUser.email,rawVerificationToken);
+
+    await emailVerification(newUser.email, rawVerificationToken);
     res.status(201).json({
       message: "user created successfully, check your email for verification",
       user: {
@@ -49,80 +52,82 @@ export const createUser = async (req, res) => {
   }
 };
 
-export const verifyEmail = async (req,res) => {
+export const verifyEmail = async (req, res) => {
   try {
-    const {token} = req.query;
-    if(!token){
+    const { token } = req.query;
+    if (!token) {
       return res.status(400).json({
-        message:"token not provided"
-      })
+        message: "token not provided",
+      });
     }
-    const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+    const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
     const user = await User.findOne({
-      verificationToken:hashedToken,
-      verificationTokenExpires:{$gt:Date.now()}
-    })
-    if(!user){
+      verificationToken: hashedToken,
+      verificationTokenExpires: { $gt: Date.now() },
+    });
+    if (!user) {
       return res.status(404).json({
-        message:"Invalid or expired verification token"
-      })
+        message: "Invalid or expired verification token",
+      });
     }
-    user.isVerified=true;
-    user.verificationToken=undefined;
-    user.verificationTokenExpires=undefined;
+    user.isVerified = true;
+    user.verificationToken = undefined;
+    user.verificationTokenExpires = undefined;
 
     await user.save();
 
     res.status(200).json({
-      message:"email verified successfully"
-    })
-
+      message: "email verified successfully",
+    });
   } catch (error) {
     console.error("Error verifying email", error);
     res.status(500).json({
       message: "Internal server error",
     });
   }
-}
+};
 
-export const resendVerifyEmail = async (req,res) => {
+export const resendVerifyEmail = async (req, res) => {
   try {
     const { email } = req.body;
-    if(!email){
+    if (!email) {
       return res.status(400).json({
-        message:"Provide email"
-      })
+        message: "Provide email",
+      });
     }
-    const user = await User.findOne({email});
-    if(!user){
+    const user = await User.findOne({ email });
+    if (!user) {
       return res.status(404).json({
-        message:"User not found"
-      })
+        message: "User not found",
+      });
     }
-    if(user.isVerified){
+    if (user.isVerified) {
       return res.status(400).json({
-        message:"User already verified"
-      })
+        message: "User already verified",
+      });
     }
-    const rawVerificationToken = crypto.randomBytes(32).toString('hex');
-    const hashedVerificationToken = crypto.createHash('sha256').update(rawVerificationToken).digest('hex');
-    
+    const rawVerificationToken = crypto.randomBytes(32).toString("hex");
+    const hashedVerificationToken = crypto
+      .createHash("sha256")
+      .update(rawVerificationToken)
+      .digest("hex");
+
     user.verificationToken = hashedVerificationToken;
-    user.verificationTokenExpires = Date.now() + 60 * 60 *1000;
+    user.verificationTokenExpires = Date.now() + 60 * 60 * 1000;
 
     await user.save();
-    await emailVerification(email,rawVerificationToken);
+    await emailVerification(email, rawVerificationToken);
 
     res.status(200).json({
-      message:"check your email for verification"
-    })
+      message: "check your email for verification",
+    });
   } catch (error) {
     console.error("Error verifying email", error);
     res.status(500).json({
       message: "Internal server error",
     });
   }
-}
+};
 
 export const userLogin = async (req, res) => {
   try {
@@ -149,12 +154,12 @@ export const userLogin = async (req, res) => {
       },
     );
 
-    const isProduction = process.env.NODE_ENV==="production";
+    const isProduction = process.env.NODE_ENV === "production";
 
     res.cookie("token", token, {
       httpOnly: true,
       secure: isProduction,
-      sameSite: isProduction?"none":"lax",
+      sameSite: isProduction ? "none" : "lax",
       maxAge: 24 * 60 * 60 * 1000,
     });
     res.status(200).json({
@@ -181,13 +186,13 @@ export const getUserUrls = async (req, res) => {
     //   urls: urls,
     // });
     res.status(200).json({
-      message:"User fetched successfully",
-      user:{
-        id:user._id,
-        username:user.username,
-        email:user.email
+      message: "User fetched successfully",
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
       },
-    })
+    });
   } catch (error) {
     console.error("Error fetching user's urls", error);
     res.status(500).json({
@@ -196,44 +201,77 @@ export const getUserUrls = async (req, res) => {
   }
 };
 
-export const userLogout = async (req,res) => {
-    try {
-        res.clearCookie("token");
-        res.status(200).json({
-            message:"Logged out successfully"
-        })
-    } catch (error) {
-        console.error("Error fetching user's urls", error);
+export const userLogout = async (req, res) => {
+  try {
+    res.clearCookie("token");
+    res.status(200).json({
+      message: "Logged out successfully",
+    });
+  } catch (error) {
+    console.error("Error fetching user's urls", error);
     res.status(500).json({
       message: "Internal server error",
     });
-    }
-}
+  }
+};
 
-export const userResetPassword = async (req,res) => {
+export const userForgetPassword = async (req, res) => {
+  try {
+      const { email } = req.body;
+      if(!email){
+        return res.status(400).json({
+          message:"provide email"
+        })
+      }
+      const user = await User.findOne({email});
+      if(!user){
+        return res.status(404).json({
+          message:"If an account with that email exists, a reset link has been sent."
+        })
+      }
+      const rawResetPasswordToken = crypto.randomBytes(32).toString('hex');
+      const hashedResetPasswordToken = crypto.createHash('sha256').update(rawResetPasswordToken).digest('hex');
+      user.resetPasswordToken=hashedResetPasswordToken;
+      user.resetPasswordTokenExpires=Date.now()+60*60*1000;
+
+      sendPasswordResetEmail(email,rawResetPasswordToken);
+
+      res.status(200).json({
+        message:"If an account with that email exists, a reset link has been sent."
+      })
+      
+  } catch (error) {
+    console.error("Error in forget password controller", error);
+    res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+};
+
+export const userResetPassword = async (req, res) => {
   try {
     const { email, password } = req.body;
-    if(!email || !password){
+    if (!email || !password) {
       res.status(400).json({
-        message:"Provide email and password both"
-      })
+        message: "Provide email and password both",
+      });
     }
     const foundUser = await User.findOne({ email });
-    if(!foundUser){
+    if (!foundUser) {
       res.status(404).json({
-        message:"User not found"
-      })
+        message: "User not found",
+      });
     }
-    const hashedPassword = await bcrypt.hash(password,10);
+    const hashedPassword = await bcrypt.hash(password, 10);
     foundUser.password = hashedPassword;
     await foundUser.save();
     res.status(200).json({
-      message:"user password updated successfully"
-    })
+      message: "user password updated successfully",
+    });
   } catch (error) {
-      console.error("Error in forget password controller", error);
-      res.status(500).json({
-        message: "Internal server error",
+    console.error("Error in reset password controller", error);
+    res.status(500).json({
+      message: "Internal server error",
     });
   }
-}
+};
