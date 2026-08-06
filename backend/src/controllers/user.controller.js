@@ -239,7 +239,7 @@ export const userForgetPassword = async (req, res) => {
       res.status(200).json({
         message:"If an account with that email exists, a reset link has been sent."
       })
-      
+
   } catch (error) {
     console.error("Error in forget password controller", error);
     res.status(500).json({
@@ -250,20 +250,26 @@ export const userForgetPassword = async (req, res) => {
 
 export const userResetPassword = async (req, res) => {
   try {
-    const { email, password } = req.body;
-    if (!email || !password) {
+    const { token, newPassword } = req.body;
+    if (!token || !newPassword) {
       res.status(400).json({
-        message: "Provide email and password both",
+        message: "Provide token and new password both",
       });
     }
-    const foundUser = await User.findOne({ email });
+    const hashedResetPasswordToken = crypto.createHash('sha256').update(token).digest('hex');
+    const foundUser = await User.findOne({
+          resetPasswordToken:hashedResetPasswordToken,
+          resetPasswordTokenExpires:{$gt:Date.now()}
+      });
     if (!foundUser) {
       res.status(404).json({
-        message: "User not found",
+        message: "Invalid or expired reset link",
       });
     }
     const hashedPassword = await bcrypt.hash(password, 10);
     foundUser.password = hashedPassword;
+    foundUser.resetPasswordToken=undefined;
+    foundUser.resetPasswordTokenExpires= undefined;
     await foundUser.save();
     res.status(200).json({
       message: "user password updated successfully",
