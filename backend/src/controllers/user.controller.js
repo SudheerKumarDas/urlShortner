@@ -209,3 +209,31 @@ export const userLogout = async (req,res) => {
     });
     }
 }
+
+export const userForgetPassword = async (req,res) => {
+  try {
+    const { email, password } = req.body;
+    if(!email || !password){
+      res.status(400).json({
+        message:"Provide email and password both"
+      })
+    }
+    const foundUser = await User.findOne({ email });
+    if(!foundUser){
+      res.status(404).json({
+        message:"User not found"
+      })
+    }
+    const hashedPassword = await bcrypt.hash(password,10);
+    foundUser.password = hashedPassword;
+    await foundUser.save();
+    res.status(200).json({
+      message:"user password updated successfully"
+    })
+  } catch (error) {
+      console.error("Error in forget password controller", error);
+      res.status(500).json({
+        message: "Internal server error",
+    });
+  }
+}
