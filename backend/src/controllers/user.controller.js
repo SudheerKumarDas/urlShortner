@@ -210,7 +210,7 @@ export const userLogout = async (req,res) => {
     }
 }
 
-export const userForgetPassword = async (req,res) => {
+export const userResetPassword = async (req,res) => {
   try {
     const { email, password } = req.body;
     if(!email || !password){

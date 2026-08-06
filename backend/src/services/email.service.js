@@ -10,7 +10,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-const emailVerification = async (toEmail, token) => {
+export const emailVerification = async (toEmail, token) => {
   const verifyUrl = `${process.env.CLIENT_URL}/verify-email?token=${token}`;
   await transporter.sendMail({
     from: `"MY APP" <${process.env.EMAIL_USER}>`,
@@ -131,4 +131,18 @@ const emailVerification = async (toEmail, token) => {
   });
 };
 
-export default emailVerification;
+export const sendPasswordResetEmail = async(toEmail,token) => {
+  const resetUrl = `${process.env.CLIENT_URL}/reset-password?token=${token}`
+  await transporter.sendMail({
+    from:`"MY APP" <${process.env.EMAIL_USER}>`,
+    to:toEmail,
+    subject:"Reset Your Password",
+    html:`
+      <h2>Password Reset Request</h2>
+      <p>You requested a password reset. Click the link below to set a new password. This link expires in 15 minutes.</p>
+      <a href="${resetUrl}" target="_blank">Reset Password</a>
+      <p>If the button doesn't work, copy this link: ${resetUrl}</p>
+      <p>If you didn't request this, you can safely ignore this email.</p>
+    `
+  })
+}
